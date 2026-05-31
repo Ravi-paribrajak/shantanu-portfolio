@@ -5,9 +5,10 @@ import Image from "next/image";
 import { 
   Mail, 
   Send, 
-  CheckCircle
+  CheckCircle,
+  AlertCircle
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Footer() {
   const [formState, setFormState] = useState({
@@ -17,28 +18,54 @@ export default function Footer() {
     budget: "$1k - $3k",
     message: ""
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<"IDLE" | "SUBMITTING" | "SUCCESS" | "ERROR">("IDLE");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    
-    // Simulate API request
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setSubmitted(true);
-      setFormState({
-        name: "",
-        email: "",
-        projectType: "youtube-long",
-        budget: "$1k - $3k",
-        message: ""
+    setStatus("SUBMITTING");
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          access_key: process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY,
+          name: formState.name,
+          email: "shantanuedit88@gmail.com",
+          client_email: formState.email,
+          replyto: formState.email,
+          subject: `New Portfolio Project Brief from ${formState.name}`,
+          format: formState.projectType,
+          budget: formState.budget,
+          message: formState.message
+        })
       });
-      
-      // Auto-hide success message after 5 seconds
-      setTimeout(() => setSubmitted(false), 5000);
-    }, 1500);
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setStatus("SUCCESS");
+        setFormState({
+          name: "",
+          email: "",
+          projectType: "youtube-long",
+          budget: "$1k - $3k",
+          message: ""
+        });
+
+        // Auto-reset success state after 5 seconds
+        setTimeout(() => setStatus("IDLE"), 5000);
+      } else {
+        setStatus("ERROR");
+        setTimeout(() => setStatus("IDLE"), 6000);
+      }
+    } catch {
+      setStatus("ERROR");
+      setTimeout(() => setStatus("IDLE"), 6000);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -51,7 +78,7 @@ export default function Footer() {
   const socials = [
     {
       name: "YouTube",
-      url: "https://youtube.com",
+      url: "https://www.youtube.com/@shantanudviedit",
       svg: (
         <svg className="w-4 h-4 transition-transform group-hover:scale-110" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z" />
@@ -61,7 +88,7 @@ export default function Footer() {
     },
     {
       name: "Instagram",
-      url: "https://instagram.com",
+      url: "https://www.instagram.com/shantanu_dvi_edit",
       svg: (
         <svg className="w-4 h-4 transition-transform group-hover:scale-110" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
@@ -72,7 +99,7 @@ export default function Footer() {
     },
     {
       name: "LinkedIn",
-      url: "https://linkedin.com",
+      url: "https://www.linkedin.com/in/shantanu-kumar-133191274",
       svg: (
         <svg className="w-4 h-4 transition-transform group-hover:scale-110" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
@@ -122,13 +149,13 @@ export default function Footer() {
               
               <div className="space-y-4">
                 <a 
-                  href="mailto:shantanu.edits@example.com" 
+                  href="mailto:shantanuedit88@gmail.com" 
                   className="flex items-center gap-3 text-sm text-slate-300 hover:text-white transition-colors group w-fit"
                 >
                   <div className="w-9 h-9 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center group-hover:border-violet-500/30 transition-all">
                     <Mail className="w-4 h-4 text-violet-400" />
                   </div>
-                  <span>shantanu.edits@example.com</span>
+                  <span>shantanuedit88@gmail.com</span>
                 </a>
               </div>
             </div>
@@ -248,20 +275,42 @@ export default function Footer() {
               </div>
 
               {/* Form Status Notifications */}
-              {submitted && (
-                <div className="p-3 bg-emerald-950/40 border border-emerald-500/20 text-emerald-400 text-xs rounded-lg flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 flex-shrink-0" />
-                  <span>Success! Your project inquiry has been received. Shantanu will contact you shortly.</span>
-                </div>
-              )}
+              <AnimatePresence mode="wait">
+                {status === "SUCCESS" && (
+                  <motion.div
+                    key="success-alert"
+                    initial={{ opacity: 0, height: 0, y: 10 }}
+                    animate={{ opacity: 1, height: "auto", y: 0 }}
+                    exit={{ opacity: 0, height: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                    className="p-3 bg-emerald-950/40 border border-emerald-500/20 text-emerald-400 text-xs rounded-lg flex items-center gap-2 overflow-hidden"
+                  >
+                    <CheckCircle className="w-4 h-4 flex-shrink-0 text-emerald-400" />
+                    <span>Success! Your project inquiry has been received. Shantanu will contact you shortly.</span>
+                  </motion.div>
+                )}
+                {status === "ERROR" && (
+                  <motion.div
+                    key="error-alert"
+                    initial={{ opacity: 0, height: 0, y: 10 }}
+                    animate={{ opacity: 1, height: "auto", y: 0 }}
+                    exit={{ opacity: 0, height: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                    className="p-3 bg-rose-950/40 border border-rose-500/20 text-rose-400 text-xs rounded-lg flex items-center gap-2 overflow-hidden"
+                  >
+                    <AlertCircle className="w-4 h-4 flex-shrink-0 text-rose-400" />
+                    <span>Failed to transmit data. Please double check fields or reach out directly.</span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               {/* Submit Button */}
               <button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={status === "SUBMITTING"}
                 className="w-full flex flex-col items-center justify-center gap-1.5 bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-505 hover:to-violet-405 disabled:opacity-50 text-white font-semibold text-sm px-6 py-3 rounded-lg shadow-lg hover:shadow-violet-600/10 transition-all cursor-pointer relative overflow-hidden"
               >
-                {isSubmitting ? (
+                {status === "SUBMITTING" ? (
                   <div className="flex flex-col items-center gap-1.5 w-full">
                     <span>Encrypting Timeline...</span>
                     <div className="w-32 h-1 bg-white/20 rounded-full overflow-hidden relative">
