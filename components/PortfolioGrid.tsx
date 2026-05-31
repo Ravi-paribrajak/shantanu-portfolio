@@ -6,6 +6,36 @@ import { Play, Clock, User, X, Video } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Project, projectsData } from "@/data/projects";
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+    },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 30, scale: 0.96 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      duration: 0.6,
+      ease: [0.215, 0.61, 0.355, 1] as [number, number, number, number],
+    },
+  },
+  exit: {
+    opacity: 0,
+    scale: 0.96,
+    transition: {
+      duration: 0.3,
+    },
+  },
+};
+
 interface ProjectCardProps {
   project: Project;
   onClick: () => void;
@@ -20,10 +50,7 @@ function ProjectCard({ project, onClick }: ProjectCardProps) {
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, scale: 0.92 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.92 }}
-      transition={{ duration: 0.4, ease: "easeInOut" }}
+      variants={cardVariants}
       onClick={onClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -153,10 +180,7 @@ function GraphicCard({ project, onClick }: GraphicCardProps) {
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      transition={{ duration: 0.3 }}
+      variants={cardVariants}
       onClick={onClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -348,23 +372,34 @@ export default function PortfolioGrid() {
           {/* Landscape Projects Section (Wider grid columns) */}
           {landscapeProjects.length > 0 && (
             <div id="landscape-campaigns" className="mb-16 scroll-mt-24">
-              <h3 className="text-xs font-bold tracking-widest text-slate-400 uppercase mb-6 flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-violet-500" />
-                LANDSCAPE CAMPAIGNS (16:9)
-              </h3>
               <motion.div
-                layout
-                className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start"
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
               >
-                <AnimatePresence mode="popLayout">
-                  {landscapeProjects.map((project) => (
-                    <ProjectCard
-                      key={project.id}
-                      project={project}
-                      onClick={() => setActiveProject(project)}
-                    />
-                  ))}
-                </AnimatePresence>
+                <h3 className="text-xs font-bold tracking-widest text-slate-400 uppercase mb-6 flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-violet-500" />
+                  LANDSCAPE CAMPAIGNS (16:9)
+                </h3>
+                <motion.div
+                  layout
+                  variants={containerVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-100px" }}
+                  className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start"
+                >
+                  <AnimatePresence mode="popLayout">
+                    {landscapeProjects.map((project) => (
+                      <ProjectCard
+                        key={project.id}
+                        project={project}
+                        onClick={() => setActiveProject(project)}
+                      />
+                    ))}
+                  </AnimatePresence>
+                </motion.div>
               </motion.div>
             </div>
           )}
@@ -372,23 +407,34 @@ export default function PortfolioGrid() {
           {/* Vertical Projects Section (Denser smartphone grid columns) */}
           {verticalProjects.length > 0 && (
             <div id="short-form-reels" className="mb-16 scroll-mt-24">
-              <h3 className="text-xs font-bold tracking-widest text-slate-400 uppercase mb-6 flex items-center gap-2 mt-4">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                SHORTS & REELS COVERS (9:16)
-              </h3>
               <motion.div
-                layout
-                className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-5 items-start"
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
               >
-                <AnimatePresence mode="popLayout">
-                  {verticalProjects.map((project) => (
-                    <ProjectCard
-                      key={project.id}
-                      project={project}
-                      onClick={() => setActiveProject(project)}
-                    />
-                  ))}
-                </AnimatePresence>
+                <h3 className="text-xs font-bold tracking-widest text-slate-400 uppercase mb-6 flex items-center gap-2 mt-4">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                  SHORTS & REELS COVERS (9:16)
+                </h3>
+                <motion.div
+                  layout
+                  variants={containerVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-100px" }}
+                  className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-5 items-start"
+                >
+                  <AnimatePresence mode="popLayout">
+                    {verticalProjects.map((project) => (
+                      <ProjectCard
+                        key={project.id}
+                        project={project}
+                        onClick={() => setActiveProject(project)}
+                      />
+                    ))}
+                  </AnimatePresence>
+                </motion.div>
               </motion.div>
             </div>
           )}
@@ -396,62 +442,77 @@ export default function PortfolioGrid() {
           {/* Overhauled Thumbnail Graphics Section (Uncrowded, breathable gaps, 3-cols) */}
           {graphicProjects.length > 0 && (
             <div id="graphic-portfolio" className="mt-12 scroll-mt-24">
-              <h3 className="text-xs font-bold tracking-widest text-slate-400 uppercase mb-8 flex items-center gap-2 mt-12 border-t border-slate-900 pt-8">
-                <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
-                HIGH-CTR THUMBNAIL DESIGN
-              </h3>
+              <motion.div
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+              >
+                <h3 className="text-xs font-bold tracking-widest text-slate-400 uppercase mb-8 flex items-center gap-2 mt-12 border-t border-slate-900 pt-8">
+                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+                  HIGH-CTR THUMBNAIL DESIGN
+                </h3>
 
-              {/* Row 1: YouTube Widescreen (16:9) - Redesigned to breathable 3-col grid */}
-              {graphicProjects.filter((p) => p.aspectRatio === "video").length > 0 && (
-                <div className="mb-16">
-                  <h4 className="text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-6 flex items-center gap-2">
-                    <span>YouTube Widescreen (16:9)</span>
-                    <span className="h-px bg-slate-900 flex-grow" />
-                  </h4>
-                  <motion.div
-                    layout
-                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10 items-start"
-                  >
-                    <AnimatePresence mode="popLayout">
-                      {graphicProjects
-                        .filter((p) => p.aspectRatio === "video")
-                        .map((project) => (
-                          <GraphicCard
-                            key={project.id}
-                            project={project}
-                            onClick={() => setActiveProject(project)}
-                          />
-                        ))}
-                    </AnimatePresence>
-                  </motion.div>
-                </div>
-              )}
+                {/* Row 1: YouTube Widescreen (16:9) - Redesigned to breathable 3-col grid */}
+                {graphicProjects.filter((p) => p.aspectRatio === "video").length > 0 && (
+                  <div className="mb-16">
+                    <h4 className="text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-6 flex items-center gap-2">
+                      <span>YouTube Widescreen (16:9)</span>
+                      <span className="h-px bg-slate-900 flex-grow" />
+                    </h4>
+                    <motion.div
+                      layout
+                      variants={containerVariants}
+                      initial="hidden"
+                      whileInView="visible"
+                      viewport={{ once: true, margin: "-100px" }}
+                      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10 items-start"
+                    >
+                      <AnimatePresence mode="popLayout">
+                        {graphicProjects
+                          .filter((p) => p.aspectRatio === "video")
+                          .map((project) => (
+                            <GraphicCard
+                              key={project.id}
+                              project={project}
+                              onClick={() => setActiveProject(project)}
+                            />
+                          ))}
+                      </AnimatePresence>
+                    </motion.div>
+                  </div>
+                )}
 
-              {/* Row 2: Shorts/Reels Covers (9:16) - Redesigned to breathable 4-col grid */}
-              {graphicProjects.filter((p) => p.aspectRatio === "portrait").length > 0 && (
-                <div>
-                  <h4 className="text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-6 flex items-center gap-2">
-                    <span>Shorts / Reels Covers (9:16)</span>
-                    <span className="h-px bg-slate-900 flex-grow" />
-                  </h4>
-                  <motion.div
-                    layout
-                    className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-5 items-start"
-                  >
-                    <AnimatePresence mode="popLayout">
-                      {graphicProjects
-                        .filter((p) => p.aspectRatio === "portrait")
-                        .map((project) => (
-                          <GraphicCard
-                            key={project.id}
-                            project={project}
-                            onClick={() => setActiveProject(project)}
-                          />
-                        ))}
-                    </AnimatePresence>
-                  </motion.div>
-                </div>
-              )}
+                {/* Row 2: Shorts/Reels Covers (9:16) - Redesigned to breathable 4-col grid */}
+                {graphicProjects.filter((p) => p.aspectRatio === "portrait").length > 0 && (
+                  <div>
+                    <h4 className="text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-6 flex items-center gap-2">
+                      <span>Shorts / Reels Covers (9:16)</span>
+                      <span className="h-px bg-slate-900 flex-grow" />
+                    </h4>
+                    <motion.div
+                      layout
+                      variants={containerVariants}
+                      initial="hidden"
+                      whileInView="visible"
+                      viewport={{ once: true, margin: "-100px" }}
+                      className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-5 items-start"
+                    >
+                      <AnimatePresence mode="popLayout">
+                        {graphicProjects
+                          .filter((p) => p.aspectRatio === "portrait")
+                          .map((project) => (
+                            <GraphicCard
+                              key={project.id}
+                              project={project}
+                              onClick={() => setActiveProject(project)}
+                            />
+                          ))}
+                      </AnimatePresence>
+                    </motion.div>
+                  </div>
+                )}
+              </motion.div>
             </div>
           )}
 

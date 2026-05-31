@@ -1,5 +1,6 @@
 "use client";
 
+import { Fragment } from "react";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
@@ -38,25 +39,81 @@ const FLOATING_BADGES = [
 export default function Hero() {
 
   // Framer Motion Animation Variants for Staggered Content Reveals
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.12,
-        delayChildren: 0.1,
-      },
-    },
+  const parentContainerVariants = {
+    hidden: { opacity: 1 },
+    visible: { opacity: 1 },
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 25 },
+  const pipelineVariants = {
+    hidden: { opacity: 0, y: -10 },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.8,
-        ease: [0.16, 1, 0.3, 1] as [number, number, number, number], // Custom smooth ease-out curve
+        duration: 0.5,
+        ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
+        delay: 0.05,
+      },
+    },
+  };
+
+  const headlineContainerVariants = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: 0.06,
+        delayChildren: 0.15,
+      },
+    },
+  };
+
+  const wordVariants = {
+    hidden: { y: "100%", opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.5,
+        ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
+      },
+    },
+  };
+
+  const descriptionVariants = {
+    hidden: { opacity: 0, y: 15 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
+        delay: 1.25, // Exactly 0.3s after headline fully locks (0.15s delay + 5 * 0.06s stagger + 0.5s duration + 0.3s offset)
+      },
+    },
+  };
+
+  const buttonsVariants = {
+    hidden: { opacity: 0, y: 15 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
+        delay: 1.37, // Staggered by 0.12s after description
+      },
+    },
+  };
+
+  const socialProofVariants = {
+    hidden: { opacity: 0, y: 15 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
+        delay: 1.49, // Staggered by 0.12s after buttons
       },
     },
   };
@@ -123,14 +180,14 @@ export default function Hero() {
         
         {/* Left Column: Typography Text Block */}
         <motion.div 
-          variants={containerVariants}
+          variants={parentContainerVariants}
           initial="hidden"
           animate="visible"
           className="lg:col-span-7 flex flex-col justify-center text-left"
         >
           {/* Active Pipeline Status Dot */}
           <motion.div 
-            variants={itemVariants} 
+            variants={pipelineVariants} 
             className="inline-flex items-center gap-2.5 mb-6"
           >
             <span className="flex h-2.5 w-2.5 relative">
@@ -142,20 +199,39 @@ export default function Hero() {
             </span>
           </motion.div>
 
-          {/* Clean Main Header Typography */}
+          {/* Clean Main Header Typography with Premium Kinetic Word-Reveal */}
           <motion.h1 
-            variants={itemVariants}
+            variants={headlineContainerVariants}
             className="text-4xl md:text-6xl font-black tracking-tighter text-white leading-[1.1] mb-6"
           >
-            CRAFTING CINEMATIC STORIES WITH{" "}
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-fuchsia-400 to-emerald-400">
-              DRUM-TIGHT PACING.
-            </span>
+            {"CRAFTING CINEMATIC STORIES WITH DRUM-TIGHT PACING.".split(" ").map((word, index) => {
+              const isGradient = word === "DRUM-TIGHT" || word === "PACING.";
+              return (
+                <Fragment key={index}>
+                  <motion.span
+                    className="inline-block overflow-hidden vertical-align-bottom align-bottom"
+                    style={{ verticalAlign: "bottom" }}
+                  >
+                    <motion.span
+                      variants={wordVariants}
+                      className={`inline-block ${
+                        isGradient
+                          ? "bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-fuchsia-400 to-emerald-400 font-black"
+                          : ""
+                      }`}
+                    >
+                      {word}
+                    </motion.span>
+                  </motion.span>
+                  {" "}
+                </Fragment>
+              );
+            })}
           </motion.h1>
 
           {/* Subtitle Description */}
           <motion.p 
-            variants={itemVariants}
+            variants={descriptionVariants}
             className="text-lg md:text-xl text-slate-400 font-light leading-relaxed mb-8 max-w-xl"
           >
             Post-production specialist bringing high-energy commercials, visual-first brand campaigns, and documentary storytelling to life. Every frame optimized; every beat synchronized.
@@ -163,7 +239,7 @@ export default function Hero() {
 
           {/* Stacked Button Row */}
           <motion.div 
-            variants={itemVariants}
+            variants={buttonsVariants}
             className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4"
           >
             <Magnetic>
@@ -219,7 +295,7 @@ export default function Hero() {
 
           {/* Social Proof Client Capsule */}
           <motion.div 
-            variants={itemVariants}
+            variants={socialProofVariants}
             className="mt-12 flex flex-col items-start"
           >
             <span className="text-[10px] sm:text-xs uppercase tracking-widest text-slate-500 font-semibold font-mono mb-3 block">

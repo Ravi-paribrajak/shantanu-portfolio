@@ -156,7 +156,13 @@ export default function Footer() {
           </div>
 
           {/* Right Column: Email Form */}
-          <div className="lg:col-span-7 bg-slate-950/40 backdrop-blur-md border border-slate-900 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)] p-6 md:p-8 relative overflow-hidden">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="lg:col-span-7 bg-slate-950/40 backdrop-blur-md border border-slate-900 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)] p-6 md:p-8 relative overflow-hidden"
+          >
             <h3 className="text-lg font-bold text-white mb-2">Start a Project</h3>
             <p className="text-xs text-slate-400 mb-6">Complete the brief below and I&apos;ll get back to you within 24 hours.</p>
             
@@ -275,7 +281,7 @@ export default function Footer() {
                 )}
               </button>
             </form>
-          </div>
+          </motion.div>
 
         </div>
 
