@@ -131,11 +131,11 @@ export default function Hero() {
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none opacity-20" />
 
       {/* Floating Helium Balloon Software Badges */}
-      <div className="absolute inset-0 pointer-events-none z-40">
+      <div className="absolute inset-0 pointer-events-none z-0 md:z-10">
         {FLOATING_BADGES.map((badge) => (
           <motion.div
             key={badge.id}
-            className="absolute bottom-0"
+            className="absolute bottom-0 pointer-events-none z-0 md:z-10 opacity-20 md:opacity-100"
             style={{ left: badge.left }}
             animate={{ 
               y: ["0vh", "-150vh"],
@@ -159,7 +159,7 @@ export default function Hero() {
                 ease: "easeInOut",
                 duration: badge.swayDuration,
               }}
-              className="w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center backdrop-blur-md border border-slate-800/80 bg-slate-900/60 shadow-lg text-white select-none"
+              className="w-10 h-10 md:w-14 md:h-14 rounded-full flex items-center justify-center backdrop-blur-md border border-slate-800/80 bg-slate-900/60 shadow-lg text-white select-none"
             >
               <div className="relative w-6 h-6 md:w-7 md:h-7">
                 <Image
@@ -333,7 +333,12 @@ export default function Hero() {
         {/* Right Column: Master Visual Frame */}
         <div className="lg:col-span-5 relative w-full flex items-center justify-center">
           {/* Master Viewport Card */}
-          <div className="relative w-full aspect-[4/5] md:aspect-square bg-slate-900/50 border border-slate-800/80 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-sm group p-2">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96, filter: "blur(10px)" }}
+            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.5 }}
+            className="relative w-full aspect-[4/5] md:aspect-square bg-slate-900/50 border border-slate-800/80 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-sm group p-2"
+          >
             <Image
               src="/branding/shantanu-image-1.jpg"
               alt="Shantanu Professional Video Editor"
@@ -362,7 +367,7 @@ export default function Hero() {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
 
       </div>
