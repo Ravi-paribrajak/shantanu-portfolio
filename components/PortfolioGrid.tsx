@@ -517,138 +517,141 @@ export default function PortfolioGrid() {
           )}
 
           {/* Absolute Viewport Modal Pinning Lightbox */}
-          <AnimatePresence>
-            {activeProject && (
-              <div
-                className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md"
-                onClick={() => setActiveProject(null)}
-              >
-                {/* Heavy-Contrast Close Button */}
-                <button
-                  onClick={() => setActiveProject(null)}
-                  className="fixed top-6 right-6 z-[60] bg-slate-900 text-white p-3 rounded-full hover:bg-slate-800 transition-colors cursor-pointer"
-                  aria-label="Close modal"
-                >
-                  <X className="w-6 h-6" />
-                </button>
-
-                {/* Content Layer with dual-panel conversion layout */}
-                <div
-                  className="relative bg-slate-950/95 border border-slate-800 rounded-2xl overflow-hidden flex flex-col lg:flex-row shadow-2xl h-auto max-h-[90vh] max-w-6xl w-full mx-4"
-                  onClick={(e) => e.stopPropagation()} // Prevent closing when clicking modal content
-                >
-                  {/* Left Panel: Video Stage (65% width) */}
-                  <div className="lg:w-[65%] w-full aspect-video bg-black flex items-center justify-center relative">
-                    {activeProject.category === "graphic" ? (
-                      activeProject.aspectRatio === "portrait" ? (
-                        <div className="aspect-[9/16] h-full py-4 bg-slate-950 relative">
-                          <Image
-                            src={activeProject.thumbnailUrl}
-                            alt={activeProject.title}
-                            fill
-                            className="object-contain"
-                            sizes="(max-w-4xl) 100vw, 896px"
-                            priority
-                          />
-                        </div>
-                      ) : (
-                        <div className="relative w-full h-full bg-slate-950/20">
-                          <Image
-                            src={activeProject.thumbnailUrl}
-                            alt={activeProject.title}
-                            fill
-                            className="object-contain"
-                            sizes="(max-w-4xl) 100vw, 896px"
-                            priority
-                          />
-                        </div>
-                      )
-                    ) : activeProject.aspectRatio === "portrait" ? (
-                      <div className="aspect-[9/16] h-full py-4 bg-slate-950 relative">
-                        <iframe
-                          className="absolute inset-0 w-full h-full border-0"
-                          src={`https://www.youtube.com/embed/${activeProject.videoEmbedId}?autoplay=1&modestbranding=1&rel=0`}
-                          title={`Video preview of ${activeProject.title}`}
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen
-                          loading="lazy"
-                        />
-                      </div>
-                    ) : (
-                      <iframe
-                        className="absolute inset-0 w-full h-full border-0"
-                        src={`https://www.youtube.com/embed/${activeProject.videoEmbedId}?autoplay=1&modestbranding=1&rel=0`}
-                        title={`Video preview of ${activeProject.title}`}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                        loading="lazy"
-                      />
-                    )}
-                  </div>
-
-                  {/* Right Panel: Case Study Sidebar (35% width) */}
-                  <div className="lg:w-[35%] w-full p-6 flex flex-col justify-between overflow-y-auto border-t lg:border-t-0 lg:border-l border-slate-900">
-                    <div>
-                      {/* Header */}
-                      <div className="flex items-center gap-2 mb-3">
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-400 border border-emerald-500/30 font-semibold shadow-[0_0_10px_rgba(16,185,129,0.15)]">
-                          {activeProject.client}
-                        </span>
-                        <span className="text-[10px] uppercase tracking-wider text-slate-400 bg-slate-900 px-2 py-0.5 rounded border border-slate-800 font-medium">
-                          {activeProject.category.replace("-", " ")}
-                        </span>
-                      </div>
-
-                      {/* Title */}
-                      <h3 className="text-xl font-bold text-white mb-3">
-                        {activeProject.title}
-                      </h3>
-
-                      {/* Description */}
-                      <p className="text-xs sm:text-sm text-slate-350 leading-relaxed mb-4">
-                        {activeProject.description}
-                      </p>
-
-                      {/* Data Metrics Grid */}
-                      {activeProject.metrics && activeProject.metrics.length > 0 && (
-                        <div className="grid grid-cols-2 gap-3 my-4">
-                          {activeProject.metrics.map(m => (
-                            <div key={m.label} className="p-3 bg-slate-900/60 rounded-xl border border-slate-800/80">
-                              <span className="text-[10px] uppercase tracking-wider text-slate-500 block">{m.label}</span>
-                              <span className="text-sm font-black text-emerald-400 font-mono mt-0.5 block">{m.value}</span>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-
-                      {/* Software Badges */}
-                      {activeProject.tools && activeProject.tools.length > 0 && (
-                        <div className="flex flex-wrap gap-1.5 mt-3">
-                          {activeProject.tools.map(tool => (
-                            <span key={tool} className="text-[9px] px-2.5 py-1 rounded-md bg-slate-950 text-slate-300 border border-slate-800/80 font-mono">
-                              {tool}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Action CTA Button */}
-                    <a
-                      href="#contact"
-                      onClick={() => setActiveProject(null)}
-                      className="mt-6 w-full text-center block px-4 py-2.5 rounded-lg text-xs font-bold text-white bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-500 hover:to-violet-400 shadow-md shadow-violet-500/10 transition-all"
-                    >
-                      Inquire About Similar Edit
-                    </a>
-                  </div>
-                </div>
-              </div>
-            )}
-          </AnimatePresence>
 
         </div>
       </section>
+
+      <AnimatePresence>
+        {activeProject && (
+          <div
+            className="fixed inset-0 w-screen h-screen z-[9999] flex items-center justify-center p-4 md:p-10 bg-black/90 backdrop-blur-md"
+            onClick={() => setActiveProject(null)}
+          >
+            {/* Heavy-Contrast Close Button */}
+            <button
+              onClick={() => setActiveProject(null)}
+              className="fixed top-6 right-6 z-[60] bg-slate-900 text-white p-3 rounded-full hover:bg-slate-800 transition-colors cursor-pointer"
+              aria-label="Close modal"
+            >
+              <X className="w-6 h-6" />
+            </button>
+
+            {/* Content Layer with dual-panel conversion layout */}
+            <div
+              className="relative bg-slate-950/95 border border-slate-800 rounded-2xl overflow-hidden flex flex-col lg:flex-row shadow-2xl h-auto max-h-[90vh] max-w-6xl w-full mx-4"
+              onClick={(e) => e.stopPropagation()} // Prevent closing when clicking modal content
+            >
+              {/* Left Panel: Video Stage (65% width) */}
+              <div className="lg:w-[65%] w-full aspect-video bg-black flex items-center justify-center relative">
+                {activeProject.category === "graphic" ? (
+                  activeProject.aspectRatio === "portrait" ? (
+                    <div className="aspect-[9/16] h-full py-4 bg-slate-950 relative">
+                      <Image
+                        src={activeProject.thumbnailUrl}
+                        alt={activeProject.title}
+                        fill
+                        className="object-contain"
+                        sizes="(max-w-4xl) 100vw, 896px"
+                        priority
+                      />
+                    </div>
+                  ) : (
+                    <div className="relative w-full h-full bg-slate-950/20">
+                      <Image
+                        src={activeProject.thumbnailUrl}
+                        alt={activeProject.title}
+                        fill
+                        className="object-contain"
+                        sizes="(max-w-4xl) 100vw, 896px"
+                        priority
+                      />
+                    </div>
+                  )
+                ) : activeProject.aspectRatio === "portrait" ? (
+                  <div className="aspect-[9/16] h-full py-4 bg-slate-950 relative">
+                    <iframe
+                      className="absolute inset-0 w-full h-full border-0"
+                      src={`https://www.youtube.com/embed/${activeProject.videoEmbedId}?autoplay=1&modestbranding=1&rel=0`}
+                      title={`Video preview of ${activeProject.title}`}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      loading="lazy"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-full max-w-4xl aspect-video bg-neutral-950 rounded-2xl overflow-hidden shadow-2xl relative">
+                    <iframe
+                      className="absolute inset-0 w-full h-full border-0"
+                      src={`https://www.youtube.com/embed/${activeProject.videoEmbedId}?autoplay=1&modestbranding=1&rel=0`}
+                      title={`Video preview of ${activeProject.title}`}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      loading="lazy"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Right Panel: Case Study Sidebar (35% width) */}
+              <div className="lg:w-[35%] w-full p-6 flex flex-col justify-between overflow-y-auto border-t lg:border-t-0 lg:border-l border-slate-900">
+                <div>
+                  {/* Header */}
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-400 border border-emerald-500/30 font-semibold shadow-[0_0_10px_rgba(16,185,129,0.15)]">
+                      {activeProject.client}
+                    </span>
+                    <span className="text-[10px] uppercase tracking-wider text-slate-400 bg-slate-900 px-2 py-0.5 rounded border border-slate-800 font-medium">
+                      {activeProject.category.replace("-", " ")}
+                    </span>
+                  </div>
+
+                  {/* Title */}
+                  <h3 className="text-xl font-bold text-white mb-3">
+                    {activeProject.title}
+                  </h3>
+
+                  {/* Description */}
+                  <p className="text-xs sm:text-sm text-slate-350 leading-relaxed mb-4">
+                    {activeProject.description}
+                  </p>
+
+                  {/* Data Metrics Grid */}
+                  {activeProject.metrics && activeProject.metrics.length > 0 && (
+                    <div className="grid grid-cols-2 gap-3 my-4">
+                      {activeProject.metrics.map(m => (
+                        <div key={m.label} className="p-3 bg-slate-900/60 rounded-xl border border-slate-800/80">
+                          <span className="text-[10px] uppercase tracking-wider text-slate-500 block">{m.label}</span>
+                          <span className="text-sm font-black text-emerald-400 font-mono mt-0.5 block">{m.value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Software Badges */}
+                  {activeProject.tools && activeProject.tools.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mt-3">
+                      {activeProject.tools.map(tool => (
+                        <span key={tool} className="text-[9px] px-2.5 py-1 rounded-md bg-slate-950 text-slate-300 border border-slate-800/80 font-mono">
+                          {tool}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Action CTA Button */}
+                <a
+                  href="#contact"
+                  onClick={() => setActiveProject(null)}
+                  className="mt-6 w-full text-center block px-4 py-2.5 rounded-lg text-xs font-bold text-white bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-500 hover:to-violet-400 shadow-md shadow-violet-500/10 transition-all"
+                >
+                  Inquire About Similar Edit
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
